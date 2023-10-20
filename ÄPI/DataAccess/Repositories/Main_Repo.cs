@@ -6,7 +6,7 @@ namespace ÄPI.DataAccess.Repositories
 {
     public class Main_Repo<T> : IRepository<T> where T: class
     {
-        private readonly ApplicationDBContext _dbContext;
+        protected readonly ApplicationDBContext _dbContext;
 
         public Main_Repo(ApplicationDBContext dbContext) 
         {
@@ -18,31 +18,8 @@ namespace ÄPI.DataAccess.Repositories
 
         public virtual async Task<bool> AddEntity(T entity)
         {
-            bool success = true;
-
-            try
-            {
-                var error = await _dbContext.Set<T>().AddAsync(entity);
-                _ = error != null ? success : !success;
-            }
-
-            catch (DbUpdateException ex) 
-            {
-                if(ex.InnerException is SqlException sqlEx && sqlEx.Number == 2601) //'2601' is duplicate PK error code.
-                {
-                    throw new Exception("DNI already exists in database. Make sure you did not any mistake and try again.");
-                }
-                else
-                {
-                    throw new Exception(ex.InnerException?.Message); //Possible data validation errors.
-                }
-            }
-            catch (Exception)
-            {
-                throw new Exception("Internal server error.");
-            }
-
-            return success;
+            var success = await _dbContext.AddAsync(entity);
+            return success != null;
         }
 
         public virtual async Task<bool> UpdateEntity(T entity, int id)

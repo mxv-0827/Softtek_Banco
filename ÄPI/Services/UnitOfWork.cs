@@ -22,8 +22,8 @@ namespace ÄPI.Services
         {
             _dbContext = dbContext;
 
-            UserRepo = new User_Repo();
-            CredentialsRepo = new Credentials_Repo();
+            UserRepo = new User_Repo(_dbContext);
+            CredentialsRepo = new Credentials_Repo(_dbContext);
             AccountTypeRepo = new AccountType_Repo();
             CurrencyRepo = new Currency_Repo();
             AccountTypeCurrencyRepo = new AccountTypeCurrency_Repo();
@@ -32,7 +32,8 @@ namespace ÄPI.Services
         }
 
 
-        public Task<int> Save() => _dbContext.SaveChangesAsync();
-        public void Dispose() => _dbContext.Dispose();
+        public IDbContextTransaction BeginTransaction() => _dbContext.Database.BeginTransaction(); //Initializes the transaction.
+        public Task<int> Save() => _dbContext.SaveChangesAsync(); //Applies changes to database.
+        public void Dispose() => _dbContext.Dispose(); //Release useless resources.
     }
 }

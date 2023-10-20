@@ -9,7 +9,7 @@ namespace ÄPI.Entities
         public int AccountNumber { get; set; }
 
         [Required]
-        public int UserDNI { get; set; }
+        public int UserID { get; set; }
 
         [Required]
         [Column(TypeName = "VARCHAR(100)")]
@@ -30,7 +30,7 @@ namespace ÄPI.Entities
 
         //Navigation props.
 
-        [ForeignKey("UserDNI")]
+        [ForeignKey("UserID")]
         public User User { get; set; } //An account must have only one owner.
 
         [ForeignKey("AccountTypeID")]

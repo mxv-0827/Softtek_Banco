@@ -19,7 +19,9 @@ namespace ÄPI.DataAccess
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<User>().HasIndex(e => e.DNI).IsUnique(); //Add a unique index for the 'DNI' prop in 'User'.
             builder.Entity<Credentials>().HasIndex(e => e.Email).IsUnique(); //Add a unique index for the 'Email' prop in 'Credentials'.
+
             builder.Entity<Account>().HasIndex(e => e.CBU).IsUnique(); //Add a unique index for the 'CBU' prop in 'Account'.
             builder.Entity<Account>().HasIndex(e => e.UUID).IsUnique(); //Add a unique index for the 'UUID' prop in 'Account'.
 
