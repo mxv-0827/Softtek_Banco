@@ -20,11 +20,9 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="DataAccess\Repositories\" />
     <Folder Include="Helpers\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="DTOs\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
