@@ -6,9 +6,9 @@ namespace ÄPI.Entities
     public class Credentials
     {
         [Key]
-        [MaxLength(8)]
-        [Column("UserDNI")]
-        public int DNI { get; set; }
+        [Column("UserID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int ID { get; set; }
 
         [Required]
         [Column(TypeName = "VARCHAR(75)")]
@@ -20,7 +20,7 @@ namespace ÄPI.Entities
 
 
         //Navigation props.
-        [ForeignKey("DNI")]
+        [ForeignKey("ID")]
         public User User { get; set; } //Only one user per account allowed.
     }
 }

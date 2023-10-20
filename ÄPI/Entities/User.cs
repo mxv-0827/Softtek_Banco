@@ -6,7 +6,10 @@ namespace ÄPI.Entities
     public class User
     {
         [Key]
-        [MaxLength(8)]
+        public int ID { get; set; }
+
+        [Required]
+        [StringLength(8, MinimumLength = 8)]
         public int DNI { get; set; }
 
         [Required]

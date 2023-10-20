@@ -9,8 +9,8 @@ namespace ÄPI.DataAccess.Seeds
         public void Configure(EntityTypeBuilder<Credentials> builder)
         {
             builder.HasData(
-                new Credentials { DNI = 44380182, Email = "maxiviand@gmail.com", Password = "1234" },
-                new Credentials { DNI = 40898968, Email = "gerardviand@gmail.com", Password = "4321" }
+                new Credentials { ID = 1, Email = "maxiviand@gmail.com", Password = "1234" },
+                new Credentials { ID = 2, Email = "gerardviand@gmail.com", Password = "4321" }
                 );
         }
     }

@@ -19,10 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Helpers\" />
     <Folder Include="Infrastructure\" />
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
 </Project>
