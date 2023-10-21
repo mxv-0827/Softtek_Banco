@@ -1,4 +1,5 @@
 using ÄPI.DataAccess;
+using ÄPI.Helpers;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IdentityAccountGenerator_Helper>();
 
 var app = builder.Build();
 

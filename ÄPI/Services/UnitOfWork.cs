@@ -24,10 +24,10 @@ namespace ÄPI.Services
 
             UserRepo = new User_Repo(_dbContext);
             CredentialsRepo = new Credentials_Repo(_dbContext);
-            AccountTypeRepo = new AccountType_Repo();
-            CurrencyRepo = new Currency_Repo();
+            AccountTypeRepo = new AccountType_Repo(_dbContext);
+            CurrencyRepo = new Currency_Repo(_dbContext);
             AccountTypeCurrencyRepo = new AccountTypeCurrency_Repo();
-            AccountRepo = new Account_Repo();
+            AccountRepo = new Account_Repo(_dbContext);
             TransactionRepo = new Transaction_Repo();
         }
 
