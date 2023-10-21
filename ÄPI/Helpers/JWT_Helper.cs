@@ -30,5 +30,17 @@ namespace ÄPI.Helpers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+        public string GetUserIDFromToken(string token) //From the assigned token, obtains its userID.
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            var claims = securityToken.Claims;
+            var userIdClaim = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+
+            return userIdClaim.Value;
+        }
     }
 }
