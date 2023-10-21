@@ -16,9 +16,10 @@ namespace ÄPI.Controllers
         private JWT_Helper _token;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUnitOfWork unitOfWork)
+        public UserController(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _token = new JWT_Helper(configuration);
         }
 
 
@@ -47,7 +48,7 @@ namespace ÄPI.Controllers
                     {
                         ID = await _unitOfWork.UserRepo.ObtainUserId(fullUser.DNI),
                         Email = fullUser.Email,
-                        Password = fullUser.Password
+                        Password = PasswordEncrypter_Helper.EncryptPassword(fullUser.Password, fullUser.Email)
                     };
 
                     bool status2 = await _unitOfWork.CredentialsRepo.AddEntity(credentials);
