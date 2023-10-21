@@ -1,6 +1,8 @@
 ﻿using ÄPI.DTOs.User;
 using ÄPI.Entities;
+using ÄPI.Helpers;
 using ÄPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
@@ -11,6 +13,7 @@ namespace ÄPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private JWT_Helper _token;
         private readonly IUnitOfWork _unitOfWork;
 
         public UserController(IUnitOfWork unitOfWork)
@@ -54,7 +57,7 @@ namespace ÄPI.Controllers
                         await _unitOfWork.Save();
                         await transaction.CommitAsync();
 
-                        return Ok("User full data successfully created");
+                        return Ok(_token.GenerateToken(credentials.ID));
                     }
                 }
 
