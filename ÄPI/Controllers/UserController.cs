@@ -51,6 +51,8 @@ namespace ÄPI.Controllers
                         Password = PasswordEncrypter_Helper.EncryptPassword(fullUser.Password, fullUser.Email)
                     };
 
+                    if (string.IsNullOrEmpty(credentials.Email) || string.IsNullOrEmpty(credentials.Password)) throw new Exception("All items must be fullfilled");
+
                     bool status2 = await _unitOfWork.CredentialsRepo.AddEntity(credentials);
 
                     if (status2)

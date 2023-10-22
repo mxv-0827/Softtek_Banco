@@ -25,7 +25,7 @@ namespace ÄPI.Controllers
             _generator = generator;
         }
 
-        [HttpPost]
+        [HttpPost("AddAccount")]
         public async Task<IActionResult> AddAccount(AccountAdd_DTO accountToAdd)
         {
             var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
@@ -69,6 +69,34 @@ namespace ÄPI.Controllers
             await _unitOfWork.Save();
 
             return Ok("Everything went perfect.");
+        }
+
+
+        [HttpGet("GetUserAccounts")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetUserAccounts()
+        {
+            var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
+            int userID = int.Parse(_token.GetUserIDFromToken(authenticatedToken));
+
+            List<Account> listUserAccounts = await _unitOfWork.AccountRepo.GetAllUserAccounts(userID);
+
+            List<AccountGet_DTO> userAccounts = new List<AccountGet_DTO>();
+
+            foreach (Account account in listUserAccounts)
+            {
+                userAccounts.Add(new AccountGet_DTO
+                {
+                    AccountNumber = account.AccountNumber,
+                    Alias = account.Alias,
+                    AccountType = await _unitOfWork.AccountTypeRepo.GetAccountType(account.AccountTypeID),
+                    Currency = await _unitOfWork.CurrencyRepo.GetCurrency(account.CurrencyID),
+                    Balance = account.Balance,
+                    CBU = account.CBU,
+                    UUID = account.UUID
+                });
+            }
+
+            return Ok(userAccounts);
         }
     }
 }
