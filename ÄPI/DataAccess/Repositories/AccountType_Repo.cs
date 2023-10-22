@@ -14,5 +14,11 @@ namespace ÄPI.DataAccess.Repositories
             var accountTypeFound = await _dbContext.AccountTypes.Where(x => x.Description == accountType).FirstAsync();
             return accountTypeFound.ID;
         }
+
+        public async Task<string> GetAccountType(int accountTypeID)
+        {
+            var accountTypeFound = await _dbContext.AccountTypes.Where(x => x.ID == accountTypeID).FirstAsync();
+            return accountTypeFound.Description;
+        }
     }
 }

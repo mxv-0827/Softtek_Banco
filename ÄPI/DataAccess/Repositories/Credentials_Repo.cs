@@ -1,4 +1,5 @@
 ﻿using ÄPI.DTOs;
+using ÄPI.DTOs.Credentials;
 using ÄPI.Entities;
 using ÄPI.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,18 @@ namespace ÄPI.DataAccess.Repositories
             return correctCredentials ?? throw new Exception("Incorrect credentials.");
         }
 
-        public async Task UpdateCredentials(LoginDTO credentials)
+
+        public async Task<int> UpdatePassword(CredentialsUpdate_DTO newCredentials)
         {
-            throw new NotImplementedException();
-            //In case of use of this method, password must be updated with the new email (in case, that is the updated prop)
+            var userCredentials = await _dbContext.Set<Credentials>().Where(x => x.Email == newCredentials.Email).FirstAsync();
+
+            if(userCredentials != null)
+            {
+                userCredentials.Password = PasswordEncrypter_Helper.EncryptPassword(newCredentials.NewPassword, newCredentials.Email);
+                return userCredentials.ID;
+            }
+
+            throw new Exception("The introduced email does not exist in DB.");
         }
     }
 }

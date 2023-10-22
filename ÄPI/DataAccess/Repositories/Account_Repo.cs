@@ -9,6 +9,8 @@ namespace ÄPI.DataAccess.Repositories
         {
         }
 
+        public async Task<List<Account>> GetAllUserAccounts(int userID) => await _dbContext.Accounts.Where(x => x.UserID == userID).ToListAsync();
+
         public async Task<bool> VerifyCBUUnicity(string cbu)
         {
             int sameCBU = await _dbContext.Accounts.Where(x => x.CBU == cbu).CountAsync();

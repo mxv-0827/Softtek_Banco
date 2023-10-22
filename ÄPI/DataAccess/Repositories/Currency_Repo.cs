@@ -14,5 +14,11 @@ namespace ÄPI.DataAccess.Repositories
             var currencyFound = await _dbContext.Currencies.Where(x => x.Description == currency).FirstAsync();
             return currencyFound.ID;
         }
+
+        public async Task<string> GetCurrency(int currencyID)
+        {
+            var currencyFound = await _dbContext.Currencies.Where(x => x.ID == currencyID).FirstAsync();
+            return currencyFound.Description;
+        }
     }
 }
