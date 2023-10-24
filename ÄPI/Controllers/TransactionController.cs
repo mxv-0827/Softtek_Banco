@@ -79,10 +79,10 @@ namespace ÄPI.Controllers
                         {
                             decimal amountConverted = await _unitOfWork.CurrencyConverted_Repo.ConvertBalance(originAccount.CurrencyID, destinationAccount.CurrencyID, addTransaction.Amount);
                             transaction2.Amount = amountConverted;
-
-                            await _unitOfWork.TransactionRepo.AddEntity(transaction2);
-                            await _unitOfWork.Save();
                         }
+
+                        await _unitOfWork.TransactionRepo.AddEntity(transaction2);
+                        await _unitOfWork.Save();
 
                         await _unitOfWork.AccountRepo.UpdateAccountBalance(destinationAccount.AccountNumber, "+", transaction2.Amount); //Amount already converted.
                         await _unitOfWork.Save();
