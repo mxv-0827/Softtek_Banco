@@ -12,6 +12,7 @@ namespace ÄPI.Services
         public AccountTypeCurrency_Repo AccountTypeCurrencyRepo { get; }
         public Account_Repo AccountRepo { get; }
         public Transaction_Repo TransactionRepo { get; }
+        public CurrencyConverted_Repo CurrencyConverted_Repo { get; }
 
 
         public IDbContextTransaction BeginTransaction();

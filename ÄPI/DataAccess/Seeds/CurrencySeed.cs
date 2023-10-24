@@ -9,9 +9,9 @@ namespace ÄPI.DataAccess.Seeds
         public void Configure(EntityTypeBuilder<Currency> builder)
         {
             builder.HasData(
-                new Currency { ID = 1, Description = "Pesos" },
-                new Currency { ID = 2, Description = "Dollar" },
-                new Currency { ID = 3, Description = "Bitcoin" }
+                new Currency { ID = 1, Description = "ARS" },
+                new Currency { ID = 2, Description = "USD" },
+                new Currency { ID = 3, Description = "BTC" }
                 );
         }
     }

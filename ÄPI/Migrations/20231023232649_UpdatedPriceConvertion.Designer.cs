@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ÄPI.DataAccess;
 
@@ -11,9 +12,10 @@ using ÄPI.DataAccess;
 namespace ÄPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231023232649_UpdatedPriceConvertion")]
+    partial class UpdatedPriceConvertion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +39,8 @@ namespace ÄPI.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("DECIMAL(18,3)");
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
 
                     b.Property<string>("CBU")
                         .HasColumnType("nvarchar(450)");
@@ -76,7 +78,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 12345,
                             AccountTypeID = 1,
                             Alias = "Cuenta Ahorro Pesos",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "1234-5-6789-1111111111111",
                             CurrencyID = 1,
                             UserID = 1
@@ -86,7 +88,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 67891,
                             AccountTypeID = 1,
                             Alias = "Cuenta Ahorro Dolares",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "1234-5-6789-2222222222222",
                             CurrencyID = 2,
                             UserID = 1
@@ -96,7 +98,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 54321,
                             AccountTypeID = 2,
                             Alias = "Cuenta BTC",
-                            Balance = 0m,
+                            Balance = 0,
                             CurrencyID = 3,
                             UUID = "A1B2C3D4-E5F6-G8H9-I110-J11K12L13M14",
                             UserID = 1
@@ -106,7 +108,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 78645,
                             AccountTypeID = 1,
                             Alias = "Mis pesitos",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "4321-3-9876-3333333333333",
                             CurrencyID = 1,
                             UserID = 2
@@ -116,7 +118,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 78432,
                             AccountTypeID = 2,
                             Alias = "Mi bitcoin",
-                            Balance = 0m,
+                            Balance = 0,
                             CurrencyID = 3,
                             UUID = "D1C2B3A4-F5E6-H8G9-110I-M11L12K13J14",
                             UserID = 2
@@ -251,17 +253,17 @@ namespace ÄPI.Migrations
                         new
                         {
                             ID = 1,
-                            Description = "ARS"
+                            Description = "Pesos"
                         },
                         new
                         {
                             ID = 2,
-                            Description = "USD"
+                            Description = "Dollar"
                         },
                         new
                         {
                             ID = 3,
-                            Description = "BTC"
+                            Description = "Bitcoin"
                         });
                 });
 
@@ -302,35 +304,35 @@ namespace ÄPI.Migrations
                         {
                             ID = 2,
                             From_Currency = 1,
-                            Price = 0.00000008465883m,
+                            Price = 0.00000008633009m,
                             To_Currency = 3
                         },
                         new
                         {
                             ID = 3,
                             From_Currency = 2,
-                            Price = 349.84207m,
+                            Price = 349.99061m,
                             To_Currency = 1
                         },
                         new
                         {
                             ID = 4,
                             From_Currency = 2,
-                            Price = 0.00002962053m,
+                            Price = 0.00003021957m,
                             To_Currency = 3
                         },
                         new
                         {
                             ID = 5,
                             From_Currency = 3,
-                            Price = 11810780m,
+                            Price = 11581590m,
                             To_Currency = 1
                         },
                         new
                         {
                             ID = 6,
                             From_Currency = 3,
-                            Price = 33759.98m,
+                            Price = 33091.14m,
                             To_Currency = 2
                         });
                 });
@@ -346,8 +348,8 @@ namespace ÄPI.Migrations
                     b.Property<int>("AccountID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("DECIMAL(18,10)");
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()

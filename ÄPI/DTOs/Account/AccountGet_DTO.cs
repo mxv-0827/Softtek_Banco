@@ -9,7 +9,7 @@ namespace ÄPI.DTOs.Account
         public string AccountType { get; set; }
         public string Currency { get; set; }
 
-        public int Balance { get; set; }
+        public decimal Balance { get; set; }
         public string? CBU { get; set; }
         public string? UUID { get; set; }
     }

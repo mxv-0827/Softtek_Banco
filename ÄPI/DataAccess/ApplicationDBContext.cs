@@ -15,6 +15,7 @@ namespace ÄPI.DataAccess
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<AccountType_Currency> AccountType_Currencies { get; set; }
+        public DbSet<CurrencyConvertion> CurrenciesConvertions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -31,7 +32,7 @@ namespace ÄPI.DataAccess
             builder.ApplyConfiguration(new CurrencySeed());
             builder.ApplyConfiguration(new AccountType_CurrencySeed());
             builder.ApplyConfiguration(new AccountSeed());
-            builder.ApplyConfiguration(new TransactionSeed());
+            builder.ApplyConfiguration(new CurrencyConvertionSeed());
         }
     }
 }
