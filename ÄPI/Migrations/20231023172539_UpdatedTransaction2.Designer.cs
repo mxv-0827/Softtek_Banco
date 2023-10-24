@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ÄPI.DataAccess;
 
@@ -11,9 +12,10 @@ using ÄPI.DataAccess;
 namespace ÄPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231023172539_UpdatedTransaction2")]
+    partial class UpdatedTransaction2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +39,8 @@ namespace ÄPI.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)");
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("DECIMAL(18,3)");
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
 
                     b.Property<string>("CBU")
                         .HasColumnType("nvarchar(450)");
@@ -76,7 +78,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 12345,
                             AccountTypeID = 1,
                             Alias = "Cuenta Ahorro Pesos",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "1234-5-6789-1111111111111",
                             CurrencyID = 1,
                             UserID = 1
@@ -86,7 +88,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 67891,
                             AccountTypeID = 1,
                             Alias = "Cuenta Ahorro Dolares",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "1234-5-6789-2222222222222",
                             CurrencyID = 2,
                             UserID = 1
@@ -96,7 +98,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 54321,
                             AccountTypeID = 2,
                             Alias = "Cuenta BTC",
-                            Balance = 0m,
+                            Balance = 0,
                             CurrencyID = 3,
                             UUID = "A1B2C3D4-E5F6-G8H9-I110-J11K12L13M14",
                             UserID = 1
@@ -106,7 +108,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 78645,
                             AccountTypeID = 1,
                             Alias = "Mis pesitos",
-                            Balance = 0m,
+                            Balance = 0,
                             CBU = "4321-3-9876-3333333333333",
                             CurrencyID = 1,
                             UserID = 2
@@ -116,7 +118,7 @@ namespace ÄPI.Migrations
                             AccountNumber = 78432,
                             AccountTypeID = 2,
                             Alias = "Mi bitcoin",
-                            Balance = 0m,
+                            Balance = 0,
                             CurrencyID = 3,
                             UUID = "D1C2B3A4-F5E6-H8G9-110I-M11L12K13J14",
                             UserID = 2
@@ -251,87 +253,17 @@ namespace ÄPI.Migrations
                         new
                         {
                             ID = 1,
-                            Description = "ARS"
+                            Description = "Pesos"
                         },
                         new
                         {
                             ID = 2,
-                            Description = "USD"
+                            Description = "Dollar"
                         },
                         new
                         {
                             ID = 3,
-                            Description = "BTC"
-                        });
-                });
-
-            modelBuilder.Entity("ÄPI.Entities.CurrencyConvertion", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int>("From_Currency")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("DECIMAL(18,10)");
-
-                    b.Property<int>("To_Currency")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("From_Currency");
-
-                    b.HasIndex("To_Currency");
-
-                    b.ToTable("CurrenciesConvertions");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            From_Currency = 1,
-                            Price = 0.00286m,
-                            To_Currency = 2
-                        },
-                        new
-                        {
-                            ID = 2,
-                            From_Currency = 1,
-                            Price = 0.00000008465883m,
-                            To_Currency = 3
-                        },
-                        new
-                        {
-                            ID = 3,
-                            From_Currency = 2,
-                            Price = 349.84207m,
-                            To_Currency = 1
-                        },
-                        new
-                        {
-                            ID = 4,
-                            From_Currency = 2,
-                            Price = 0.00002962053m,
-                            To_Currency = 3
-                        },
-                        new
-                        {
-                            ID = 5,
-                            From_Currency = 3,
-                            Price = 11810780m,
-                            To_Currency = 1
-                        },
-                        new
-                        {
-                            ID = 6,
-                            From_Currency = 3,
-                            Price = 33759.98m,
-                            To_Currency = 2
+                            Description = "Bitcoin"
                         });
                 });
 
@@ -346,8 +278,8 @@ namespace ÄPI.Migrations
                     b.Property<int>("AccountID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("DECIMAL(18,10)");
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -467,25 +399,6 @@ namespace ÄPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ÄPI.Entities.CurrencyConvertion", b =>
-                {
-                    b.HasOne("ÄPI.Entities.Currency", "Currency_From")
-                        .WithMany("From_CurrenciesConvertions")
-                        .HasForeignKey("From_Currency")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ÄPI.Entities.Currency", "Currency_To")
-                        .WithMany("To_CurrenciesConvertions")
-                        .HasForeignKey("To_Currency")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Currency_From");
-
-                    b.Navigation("Currency_To");
-                });
-
             modelBuilder.Entity("ÄPI.Entities.Transaction", b =>
                 {
                     b.HasOne("ÄPI.Entities.Account", "Account")
@@ -514,10 +427,6 @@ namespace ÄPI.Migrations
                     b.Navigation("AccountType_Currencies");
 
                     b.Navigation("Accounts");
-
-                    b.Navigation("From_CurrenciesConvertions");
-
-                    b.Navigation("To_CurrenciesConvertions");
                 });
 
             modelBuilder.Entity("ÄPI.Entities.User", b =>

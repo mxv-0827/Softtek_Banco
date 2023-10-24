@@ -8,28 +8,21 @@ namespace ÄPI.Entities
         [Key]
         public int ID { get; set; }
 
-        public int? SourceAccount { get; set; } //Not 'Required' due to the possibility of making deposits, which have no source account.
-        public int? DestinationAccount { get; set; } //Not 'Required' due to the possibility of making withdrawals, which have no destination account.
+        [Required]
+        public int AccountID { get; set; }
 
         [Required]
-        [Column("TransactionType", TypeName = "VARCHAR(50)")]
+        [Column(TypeName = "VARCHAR(40)")]
         public string Type { get; set; }
 
         [Required]
-        public int CurrencyID { get; set; }
+        [Column(TypeName = "DECIMAL(18, 10)")]
+        public decimal Amount { get; set; }
 
-        [Required]
-        public int Amount { get; set; }
-
-
+        
         //Navigation props.
 
-        [ForeignKey("SourceAccount")]
-        public Account OriginAccount { get; set; } //A transaction must only be produced by one account.
-
-        [ForeignKey("DestinationAccount")]
-        public Account ReceivingAccount { get; set; } //A transaction must only be produced to one account.
-
-        public Currency Currency { get; set; } //A transaction must be made in only one currency.
+        [ForeignKey("AccountID")]
+        public Account Account { get; set; } //A transaction must only be produced by one account.
     }
 }

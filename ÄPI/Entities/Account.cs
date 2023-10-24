@@ -22,7 +22,8 @@ namespace ÄPI.Entities
         public int CurrencyID { get; set; }
 
         [Required]
-        public int Balance { get; set; }
+        [Column(TypeName = "DECIMAL(18, 3)")]
+        public decimal Balance { get; set; }
 
         public string? CBU { get; set; } //Not 'Required' since it can be a crypto type of account, which does not have this prop.
         public string? UUID { get; set; } //Not 'Required' since it can be a fiduciary type of account, which does not have this prop.
@@ -39,11 +40,6 @@ namespace ÄPI.Entities
         [ForeignKey("CurrencyID")]
         public Currency Currency { get; set; } //An account must only have one currency only.
 
-
-        [InverseProperty("OriginAccount")]
         public virtual ICollection<Transaction> TransactionsOrigin { get; set; } //A user may make multiple transactions FROM a same account.
-
-        [InverseProperty("ReceivingAccount")]
-        public virtual ICollection<Transaction> TransactionsDestination { get; set; } //A user may make multiple transactions TO a same account.
     }
 }

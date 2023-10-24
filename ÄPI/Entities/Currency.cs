@@ -16,6 +16,8 @@ namespace ÄPI.Entities
         //Navigation props.
         public ICollection<Account> Accounts { get; set; } //A currency may be present in more than one account at a time.
         public ICollection<AccountType_Currency> AccountType_Currencies { get; set; }
-        public ICollection<Transaction> Transactions { get; set; } //Multiple transactions may be made in a same currency.
+
+        public ICollection<CurrencyConvertion> From_CurrenciesConvertions { get; set; }
+        public ICollection<CurrencyConvertion> To_CurrenciesConvertions { get; set; }
     }
 }

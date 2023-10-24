@@ -16,6 +16,7 @@ namespace ÄPI.Services
         public AccountTypeCurrency_Repo AccountTypeCurrencyRepo { get; private set; }
         public Account_Repo AccountRepo { get; private set; }
         public Transaction_Repo TransactionRepo { get; private set; }
+        public CurrencyConverted_Repo CurrencyConverted_Repo { get; private set; }
 
 
         public UnitOfWork(ApplicationDBContext dbContext)
@@ -29,6 +30,7 @@ namespace ÄPI.Services
             AccountTypeCurrencyRepo = new AccountTypeCurrency_Repo(_dbContext);
             AccountRepo = new Account_Repo(_dbContext);
             TransactionRepo = new Transaction_Repo(_dbContext);
+            CurrencyConverted_Repo = new CurrencyConverted_Repo(_dbContext);
         }
 
 

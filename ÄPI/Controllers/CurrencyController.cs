@@ -1,7 +1,6 @@
 ﻿using ÄPI.Entities;
 using ÄPI.Services;
-using ÄPI.Services.APIs.BitcoinAPI;
-using ÄPI.Services.APIs.DolarAPI;
+using ÄPI.Services.APIs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,27 +44,12 @@ namespace ÄPI.Controllers
         }
 
 
-        [HttpGet("GetDollarPrice")]
-        public async Task<ActionResult> GetDollarPrice()
+        [HttpGet("GetConvertionValue")]
+        public async Task<ActionResult> GetConvertionValue(string fromCurrency, string toCurrency, int amount)
         {
             try
             {
-                return Ok(await DollarPrice.GetDollarPrice());
-            }
-
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpGet("GetBitcoinPrice")]
-        public async Task<ActionResult> GetBitcoinPrice()
-        {
-            try
-            {
-                return Ok(await BitcoinPrice.GetBitcoinPrice());
+                return Ok(await CurrencyConvertionAPI.GetCurrencyConvertion(fromCurrency, toCurrency, amount));
             }
 
             catch(Exception ex)

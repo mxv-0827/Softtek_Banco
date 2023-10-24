@@ -5,6 +5,7 @@ using ÄPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 
 namespace ÄPI.Controllers
 {
@@ -97,6 +98,34 @@ namespace ÄPI.Controllers
             }
 
             return Ok(userAccounts);
+        }
+
+
+        [HttpGet("GetUserAccount")]
+        public async Task<ActionResult> GetUserAccount([FromQuery] int accountNumber)
+        {
+            try
+            {
+                Account account = await _unitOfWork.AccountRepo.GetEntityById(accountNumber);
+
+                AccountGet_DTO userAccountDTO = new AccountGet_DTO
+                {
+                    AccountNumber = account.AccountNumber,
+                    Alias = account.Alias,
+                    AccountType = await _unitOfWork.AccountTypeRepo.GetAccountType(account.AccountTypeID),
+                    Currency = await _unitOfWork.CurrencyRepo.GetCurrency(account.CurrencyID),
+                    Balance = account.Balance,
+                    CBU = account.CBU,
+                    UUID = account.UUID
+                };
+
+                return Ok(userAccountDTO);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

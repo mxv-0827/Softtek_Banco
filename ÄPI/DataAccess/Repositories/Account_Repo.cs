@@ -22,5 +22,18 @@ namespace ÄPI.DataAccess.Repositories
             int sameUUID = await _dbContext.Accounts.Where(x => x.UUID == uuid).CountAsync();
             return sameUUID == 0;
         }
+
+        public async Task<bool> UpdateAccountBalance(int id, string operation, decimal amount)
+        {
+            var accountToUpdate = await _dbContext.Set<Account>().FindAsync(id);
+
+            if(accountToUpdate != null)
+            {
+                _ = operation == "+" ? accountToUpdate.Balance += amount : accountToUpdate.Balance -= amount;
+                return true;
+            }
+
+            return false;
+        }
     }
 }
