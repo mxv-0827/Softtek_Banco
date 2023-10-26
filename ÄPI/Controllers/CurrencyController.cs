@@ -3,6 +3,7 @@ using ÄPI.Entities;
 using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using ÄPI.Services.APIs;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,6 @@ namespace ÄPI.Controllers
     public class CurrencyController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-
 
         public CurrencyController(IUnitOfWork unitOfWork)
         {
@@ -57,6 +57,33 @@ namespace ÄPI.Controllers
             }
 
             catch(Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
+            }
+        }
+
+
+        [HttpPut("UpdateCurrencyValue")]
+        public async Task<IActionResult> UpdateCurrencyValue()
+        {
+            try
+            {
+                List<CurrencyConvertion> allCurrencies = await _unitOfWork.CurrencyConverted_Repo.GetAllEntities();
+
+                foreach (CurrencyConvertion currency in allCurrencies)
+                {
+                    string fromCurrencyName = await _unitOfWork.CurrencyRepo.GetCurrency(currency.From_Currency);
+                    string toCurrencyName = await _unitOfWork.CurrencyRepo.GetCurrency(currency.To_Currency);
+
+                    await _unitOfWork.CurrencyConverted_Repo.UpdateCurrencyPrice(currency, fromCurrencyName, toCurrencyName);
+                }
+
+                await _unitOfWork.Save();
+
+                return ResponseFactory.CreateSuccessResponse(200, "Currency prices successfully updated");
+            }
+
+            catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
