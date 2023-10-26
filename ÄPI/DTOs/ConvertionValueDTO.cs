@@ -10,7 +10,7 @@ namespace ÄPI.DTOs
         [CurrencySymbolFormat]
         public string To_Currency { get; set; }
 
-        [OnlyLetterFormat]
+        [OnlyNumberFormat]
         public int Amount { get; set; }
     }
 }

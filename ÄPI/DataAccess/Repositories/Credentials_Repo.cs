@@ -20,7 +20,7 @@ namespace ÄPI.DataAccess.Repositories
 
         public async Task<int> UpdatePassword(CredentialsUpdate_DTO newCredentials)
         {
-            var userCredentials = await _dbContext.Set<Credentials>().Where(x => x.Email == newCredentials.Email).FirstAsync();
+            var userCredentials = await _dbContext.Set<Credentials>().Where(x => x.Email == newCredentials.Email).FirstOrDefaultAsync();
 
             if(userCredentials != null)
             {

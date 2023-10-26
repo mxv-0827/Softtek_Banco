@@ -7,7 +7,7 @@ namespace ÄPI.DTOs.User
         [DNIFormat]
         public int DNI { get; set; }
 
-        [OnlyNumberFormat]
+        [OnlyLetterFormat]
         public string FullName { get; set; }
         public DateTime BirthDate { get; set; }
         public string Genre { get; set; }
