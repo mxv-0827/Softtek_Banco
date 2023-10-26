@@ -1,8 +1,11 @@
 using ÄPI.DataAccess;
 using ÄPI.Helpers;
 using ÄPI.Services;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -16,15 +19,6 @@ var allowSpecificOrigins = "";
 //builder.Services.AddControllers(); UNCOMMENT THIS LINE IN CASE THE LINE BELOW ARE ELIMNATED OR COMMENTED.
 
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: allowSpecificOrigins, policy =>
-    {
-        policy.WithOrigins("https://localhost:7170").AllowAnyMethod().AllowAnyHeader();
-    });
-});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -72,6 +66,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowSpecificOrigins, policy =>
+    {
+        policy.WithOrigins("https://localhost:7170").AllowAnyMethod().AllowAnyHeader();
+    });
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IdentityAccountGenerator_Helper>();
