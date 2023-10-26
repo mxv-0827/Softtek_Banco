@@ -24,6 +24,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Create both the personal data and the credentials of a user.
+        /// </summary>
+        /// <param name="fullUser"></param>
+        /// <returns>A token which is used to authenticate the user.</returns>
         [HttpPost("AddFullUser")]
         public async Task<IActionResult> AddFullUser(UserAdd_DTO fullUser)
         {

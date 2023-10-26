@@ -27,6 +27,11 @@ namespace ÄPI.Controllers
             _generator = generator;
         }
 
+        /// <summary>
+        /// Adds a new account for the logged in user.
+        /// </summary>
+        /// <param name="accountToAdd"></param>
+        /// <returns>A message with the status of the process.</returns>
         [HttpPost("AddAccount")]
         public async Task<IActionResult> AddAccount(AccountAdd_DTO accountToAdd)
         {
@@ -84,7 +89,10 @@ namespace ÄPI.Controllers
             
         }
 
-
+        /// <summary>
+        /// Gets all accounts from the logged in user.
+        /// </summary>
+        /// <returns>An array of objects representing every account.</returns>
         [HttpGet("GetUserAccounts")]
         public async Task<IActionResult> GetUserAccounts()
         {
@@ -120,6 +128,11 @@ namespace ÄPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Based on a given accountNumber, gets all its info.
+        /// </summary>
+        /// <param name="accountNumber"></param>
+        /// <returns></returns>
 
         [HttpGet("GetUserAccount/{accountNumber}")]
         public async Task<IActionResult> GetUserAccount([FromRoute] int accountNumber)
@@ -156,6 +169,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Based on a given accountNumber, gets its balance.
+        /// </summary>
+        /// <param name="accountNumber"></param>
+        /// <returns></returns>
         [HttpGet("GetBalance/{accountNumber}")]
         public async Task<IActionResult> GetBalance([FromRoute] int accountNumber)
         {

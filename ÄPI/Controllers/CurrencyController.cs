@@ -21,6 +21,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Based on the type of the account, return its allowed currencies.
+        /// </summary>
+        /// <param name="accountType"></param>
+        /// <returns></returns>
         [HttpGet("GetCurrencies")]
         public async Task<IActionResult> GetCurrencies(string accountType)
         {
@@ -46,6 +51,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Chooses 2 diferent currencies and get the converted value among them.
+        /// </summary>
+        /// <param name="convertionValue"></param> Object with the props required.
+        /// <returns>The convertion value.</returns>
         [HttpGet("GetConvertionValue")]
         public async Task<IActionResult> GetConvertionValue([FromQuery] ConvertionValueDTO convertionValue)
         {
@@ -63,6 +73,10 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Updates the convertion values of all currencyies.
+        /// </summary>
+        /// <returns>A response with the status of the process.</returns>
         [HttpPut("UpdateCurrencyValue")]
         public async Task<IActionResult> UpdateCurrencyValue()
         {

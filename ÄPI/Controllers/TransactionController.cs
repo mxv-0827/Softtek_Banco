@@ -26,7 +26,11 @@ namespace ÄPI.Controllers
             _unitOfWork = unitOfWork;
         }
 
-
+        /// <summary>
+        /// Adds a new transaction to DB.
+        /// </summary>
+        /// <param name="addTransaction">Object with the transaction props.</param>
+        /// <returns>A message with rhe status of the process</returns>
         [HttpPost("AddTransaction")]
         public async Task<IActionResult> AddTransaction(TransactionAdd_DTO addTransaction)
         {
@@ -119,6 +123,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Based on the accountNumber, get every single transaction.
+        /// </summary>
+        /// <param name="accountNumber"></param> //Object with the props required.
+        /// <returns>Every transaction the account took part in.</returns>
         [HttpGet("GetAccountTransactions/{accountNumber}")]
         public async Task<IActionResult> GetAccountTransactions([FromRoute] int accountNumber)
         {

@@ -21,6 +21,11 @@ namespace ÄPI.Controllers
             _token = new JWT_Helper(configuration);
         }
 
+        /// <summary>
+        /// Based on th given Email, updates the password.
+        /// </summary>
+        /// <param name="newCredentials"></param>
+        /// <returns>A token used to authenticate the user.</returns>
 
         [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(CredentialsUpdate_DTO newCredentials)
