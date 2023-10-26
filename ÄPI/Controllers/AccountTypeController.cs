@@ -1,4 +1,5 @@
 ﻿using ÄPI.Entities;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace ÄPI.Controllers
 
 
         [HttpGet("GetAllAccountTypes")]
-        public async Task<ActionResult<IEnumerable<string>>> GetAllAccountTypes()
+        public async Task<IActionResult> GetAllAccountTypes()
         {
             try
             {
@@ -32,12 +33,12 @@ namespace ÄPI.Controllers
                     accountTypes.Add(accountType.Description); //Adds only the currency name to the list.
                 }
 
-                return Ok(accountTypes);
+                return ResponseFactory.CreateSuccessResponse(202, accountTypes);
             }
 
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }

@@ -2,6 +2,7 @@
 using ÄPI.DTOs.Transaction;
 using ÄPI.Entities;
 using ÄPI.Helpers;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using ÄPI.Services.APIs;
 using Microsoft.AspNetCore.Authorization;
@@ -27,8 +28,10 @@ namespace ÄPI.Controllers
 
 
         [HttpPost("AddTransaction")]
-        public async Task<ActionResult> AddTransaction(TransactionAdd_DTO addTransaction)
+        public async Task<IActionResult> AddTransaction(TransactionAdd_DTO addTransaction)
         {
+            if (!ModelState.IsValid) { }
+
             var transactionProcess = _unitOfWork.BeginTransaction(); //Initializes transaction.
 
             try
@@ -36,6 +39,7 @@ namespace ÄPI.Controllers
                 var originAccount = addTransaction.OriginAccountID != null ? await _unitOfWork.AccountRepo.GetEntityById((int)addTransaction.OriginAccountID) : null;
                 var destinationAccount = addTransaction.DestinationAccountID != null ? await _unitOfWork.AccountRepo.GetEntityById((int)addTransaction.DestinationAccountID) : null;
 
+                if (originAccount.UserID != destinationAccount.UserID) throw new Exception("Transfers can only be done among accounts from the same user.");
 
                 Transaction transaction = new Transaction
                 {
@@ -60,7 +64,7 @@ namespace ÄPI.Controllers
                     if (addTransaction.DestinationAccountID == null) 
                     {
                         await transactionProcess.CommitAsync(); //Confirms changes into the DB. => END OF ROUTE.
-                        return Ok("Transaction successfully uploaded."); //In case of an EXTRACTION.
+                        return ResponseFactory.CreateSuccessResponse(201, "Extraction successfully uploaded.");//In case of an EXTRACTION.
                     } 
                     
                     else //In case of a TRANSFER.
@@ -88,7 +92,7 @@ namespace ÄPI.Controllers
                         await _unitOfWork.Save();
                         await transactionProcess.CommitAsync(); //Confirms changes into the DB => END OF ROUTE.
 
-                        return Ok("Transactions successfully uploaded.");
+                        return ResponseFactory.CreateSuccessResponse(201, "Transfer successfully uploaded.");
                     }
                 }
 
@@ -101,20 +105,20 @@ namespace ÄPI.Controllers
                     await _unitOfWork.Save(); //In case of a DEPOSIT.
 
                     await transactionProcess.CommitAsync(); //Confirms changes into the DB => END OF ROUTE.
-                    return Ok("Transaction successfully uploades.");
+                    return ResponseFactory.CreateSuccessResponse(201, "Deposit successfully uploaded.");
                 }
             }
 
             catch (Exception ex)
             {
                 await transactionProcess.RollbackAsync();
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
 
 
-        [HttpGet("GetAccountTransactions")]
-        public async Task<ActionResult<IEnumerable<TransactionGet_DTO>>> GetAccountTransactions(int accountNumber)
+        [HttpGet("GetAccountTransactions/{accountNumber}")]
+        public async Task<ActionResult<IEnumerable<TransactionGet_DTO>>> GetAccountTransactions([FromRoute] int accountNumber)
         {
             try
             {
