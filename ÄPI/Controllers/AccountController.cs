@@ -1,6 +1,7 @@
 ﻿using ÄPI.DTOs.Account;
 using ÄPI.Entities;
 using ÄPI.Helpers;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,8 @@ namespace ÄPI.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) { }
+
                 var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
 
                 Account account = new Account
@@ -71,51 +74,66 @@ namespace ÄPI.Controllers
                 await _unitOfWork.AccountRepo.AddEntity(account);
                 await _unitOfWork.Save();
 
-                return Ok("Everything went perfect.");
+                return ResponseFactory.CreateSuccessResponse(201, "Account successfully created.");
             }
 
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
             
         }
 
 
         [HttpGet("GetUserAccounts")]
-        public async Task<ActionResult<IEnumerable<Account>>> GetUserAccounts()
+        public async Task<IActionResult> GetUserAccounts()
         {
-            var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
-            int userID = int.Parse(_token.GetUserIDFromToken(authenticatedToken));
-
-            List<Account> listUserAccounts = await _unitOfWork.AccountRepo.GetAllUserAccounts(userID);
-
-            List<AccountGet_DTO> userAccounts = new List<AccountGet_DTO>();
-
-            foreach (Account account in listUserAccounts)
+            try
             {
-                userAccounts.Add(new AccountGet_DTO
+                var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
+                int userID = int.Parse(_token.GetUserIDFromToken(authenticatedToken));
+
+                List<Account> listUserAccounts = await _unitOfWork.AccountRepo.GetAllUserAccounts(userID);
+
+                List<AccountGet_DTO> userAccounts = new List<AccountGet_DTO>();
+
+                foreach (Account account in listUserAccounts)
                 {
-                    AccountNumber = account.AccountNumber,
-                    Alias = account.Alias,
-                    AccountType = await _unitOfWork.AccountTypeRepo.GetAccountType(account.AccountTypeID),
-                    Currency = await _unitOfWork.CurrencyRepo.GetCurrency(account.CurrencyID),
-                    Balance = account.Balance,
-                    CBU = account.CBU,
-                    UUID = account.UUID
-                });
+                    userAccounts.Add(new AccountGet_DTO
+                    {
+                        AccountNumber = account.AccountNumber,
+                        Alias = account.Alias,
+                        AccountType = await _unitOfWork.AccountTypeRepo.GetAccountType(account.AccountTypeID),
+                        Currency = await _unitOfWork.CurrencyRepo.GetCurrency(account.CurrencyID),
+                        Balance = account.Balance,
+                        CBU = account.CBU,
+                        UUID = account.UUID
+                    });
+                }
+
+                return ResponseFactory.CreateSuccessResponse(202, userAccounts);
             }
 
-            return Ok(userAccounts);
+            catch(Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
+            }
         }
 
 
         [HttpGet("GetUserAccount/{accountNumber}")]
-        public async Task<ActionResult> GetUserAccount([FromRoute] int accountNumber)
+        public async Task<IActionResult> GetUserAccount([FromRoute] int accountNumber)
         {
             try
             {
+                var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
+                int userID = int.Parse(_token.GetUserIDFromToken(authenticatedToken));
+
                 Account account = await _unitOfWork.AccountRepo.GetEntityById(accountNumber);
+
+                if (account == null) throw new Exception("No account matched the accountNumber value.");
+                else if (userID != account.UserID) throw new Exception("This account does not belong to you.");
+
 
                 AccountGet_DTO userAccountDTO = new AccountGet_DTO
                 {
@@ -128,12 +146,12 @@ namespace ÄPI.Controllers
                     UUID = account.UUID
                 };
 
-                return Ok(userAccountDTO);
+                return ResponseFactory.CreateSuccessResponse(202, userAccountDTO);
             }
 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
 
@@ -148,16 +166,16 @@ namespace ÄPI.Controllers
 
                 var account = await _unitOfWork.AccountRepo.GetEntityById(accountNumber);
 
-                if (userID != account.UserID) throw new Exception("This account does not belong to you.");
-                
-                return Ok(account.Balance);
+                if (account == null) throw new Exception("No account matched the accountNumber value.");
+                else if (userID != account.UserID) throw new Exception("This account does not belong to you.");
+
+                return ResponseFactory.CreateSuccessResponse(202, account.Balance);
             }
 
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
-            
         }
     }
 }

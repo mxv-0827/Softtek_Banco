@@ -36,6 +36,8 @@ namespace ÄPI.Controllers
 
             try
             {
+                if (addTransaction.OriginAccountID == addTransaction.DestinationAccountID) throw new Exception("Origin and destination account cannot have the same account number.");
+
                 var originAccount = addTransaction.OriginAccountID != null ? await _unitOfWork.AccountRepo.GetEntityById((int)addTransaction.OriginAccountID) : null;
                 var destinationAccount = addTransaction.DestinationAccountID != null ? await _unitOfWork.AccountRepo.GetEntityById((int)addTransaction.DestinationAccountID) : null;
 
@@ -118,7 +120,7 @@ namespace ÄPI.Controllers
 
 
         [HttpGet("GetAccountTransactions/{accountNumber}")]
-        public async Task<ActionResult<IEnumerable<TransactionGet_DTO>>> GetAccountTransactions([FromRoute] int accountNumber)
+        public async Task<IActionResult> GetAccountTransactions([FromRoute] int accountNumber)
         {
             try
             {
@@ -137,12 +139,12 @@ namespace ÄPI.Controllers
                     });
                 }
 
-                return Ok(accountTransactions);
+                return ResponseFactory.CreateSuccessResponse(202, accountTransactions);
             }
 
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }
