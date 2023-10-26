@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>C:\Users\gvian\OneDrive\Documents\Maxi\SOFFTEK PRUEBA\BACK\Softtek_Banco\ÄPI\bin\Debug\net6.0\API.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

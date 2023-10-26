@@ -23,6 +23,11 @@ namespace ÄPI.Controllers
         }
 
 
+        /// <summary>
+        /// Authenticate the credentials of a user, in order to give him access to the website.
+        /// </summary>
+        /// <param name="loginCredentials"></param>
+        /// <returns>A valid token used to access the website.</returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO loginCredentials)
         {

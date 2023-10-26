@@ -18,7 +18,10 @@ namespace ÄPI.Controllers
             _unitOfWork = unitOfWork;
         }
 
-
+        /// <summary>
+        /// Gets every single accountType created in the DB.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAllAccountTypes")]
         public async Task<IActionResult> GetAllAccountTypes()
         {
