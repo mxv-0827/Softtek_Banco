@@ -1,4 +1,6 @@
-﻿using ÄPI.Entities;
+﻿using ÄPI.DTOs;
+using ÄPI.Entities;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using ÄPI.Services.APIs;
 using Microsoft.AspNetCore.Http;
@@ -20,12 +22,12 @@ namespace ÄPI.Controllers
 
 
         [HttpGet("GetCurrencies")]
-        public async Task<ActionResult<IEnumerable<string>>> GetCurrencies(string accountType)
+        public async Task<IActionResult> GetCurrencies(string accountType)
         {
             try
             {
                 int accountTypeID = await _unitOfWork.AccountTypeRepo.GetID(accountType); //Gets ID of the accountType
-                List<AccountType_Currency> fullAvailableCurrencies = await _unitOfWork.AccountTypeCurrencyRepo.GetAvailableCurrencies(accountTypeID); //Gets the full .
+                List<AccountType_Currency> fullAvailableCurrencies = await _unitOfWork.AccountTypeCurrencyRepo.GetAvailableCurrencies(accountTypeID); //Gets the full register.
 
                 List<string> currenciesAvailable = new List<string>();
 
@@ -34,27 +36,29 @@ namespace ÄPI.Controllers
                     currenciesAvailable.Add(await _unitOfWork.CurrencyRepo.GetCurrency(accountTypeCurrency.CurrencyID)); //Gets the name of the currency based on its ID. Adds it to the list.
                 }
 
-                return Ok(currenciesAvailable);
+                return ResponseFactory.CreateSuccessResponse(202, currenciesAvailable);
             }
 
             catch (Exception ex) 
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
 
 
         [HttpGet("GetConvertionValue")]
-        public async Task<ActionResult> GetConvertionValue(string fromCurrency, string toCurrency, int amount)
+        public async Task<IActionResult> GetConvertionValue([FromQuery] ConvertionValueDTO convertionValue)
         {
             try
             {
-                return Ok(await CurrencyConvertionAPI.GetCurrencyConvertion(fromCurrency, toCurrency, amount));
+                if (!ModelState.IsValid) { }
+
+                return ResponseFactory.CreateSuccessResponse(202, await CurrencyConvertionAPI.GetCurrencyConvertion(convertionValue.From_Currency, convertionValue.To_Currency, convertionValue.Amount));
             }
 
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }

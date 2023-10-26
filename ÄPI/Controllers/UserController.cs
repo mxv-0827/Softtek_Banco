@@ -1,6 +1,7 @@
 ﻿using ÄPI.DTOs.User;
 using ÄPI.Entities;
 using ÄPI.Helpers;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,8 @@ namespace ÄPI.Controllers
         [HttpPost("AddFullUser")]
         public async Task<IActionResult> AddFullUser(UserAdd_DTO fullUser)
         {
+            if (!ModelState.IsValid) { }
+
             var transaction = _unitOfWork.BeginTransaction();
 
             User user = new User
@@ -38,9 +41,9 @@ namespace ÄPI.Controllers
 
             try
             {
-                bool status1 = await _unitOfWork.UserRepo.AddEntity(user);
+                bool statusAddUser = await _unitOfWork.UserRepo.AddEntity(user);
 
-                if (status1)
+                if (statusAddUser)
                 {
                     await _unitOfWork.Save();
 
@@ -51,26 +54,24 @@ namespace ÄPI.Controllers
                         Password = PasswordEncrypter_Helper.EncryptPassword(fullUser.Password, fullUser.Email)
                     };
 
-                    if (string.IsNullOrEmpty(credentials.Email) || string.IsNullOrEmpty(credentials.Password)) throw new Exception("All items must be fullfilled");
+                    bool statusAddCredentials = await _unitOfWork.CredentialsRepo.AddEntity(credentials);
 
-                    bool status2 = await _unitOfWork.CredentialsRepo.AddEntity(credentials);
-
-                    if (status2)
+                    if (statusAddCredentials)
                     {
                         await _unitOfWork.Save();
                         await transaction.CommitAsync();
 
-                        return Ok(_token.GenerateToken(credentials.ID));
+                        return ResponseFactory.CreateSuccessResponse(201, _token.GenerateToken(credentials.ID));
                     }
                 }
 
-                return BadRequest("Something happened");
+                return ResponseFactory.CreateErrorResponse(500, "An error took place while registering the user.");
             }
             
             catch(Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }

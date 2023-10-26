@@ -1,6 +1,7 @@
 ﻿using ÄPI.DTOs;
 using ÄPI.Entities;
 using ÄPI.Helpers;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,12 @@ namespace ÄPI.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Login(LoginDTO loginCredentials)
+        public async Task<IActionResult> Login(LoginDTO loginCredentials)
         {
             try
             {
+                if (!ModelState.IsValid) { } 
+
                 var userCredentials = await _unitOfWork.CredentialsRepo.AuthenticateCredentials(loginCredentials);
 
                 if (userCredentials != null)
@@ -34,15 +37,15 @@ namespace ÄPI.Controllers
                     var credentials = (Credentials)userCredentials;
                     int userID = credentials.ID;
 
-                    return Ok(_token.GenerateToken(userID));
+                    return ResponseFactory.CreateSuccessResponse(202, _token.GenerateToken(userID));
                 }
 
-                return BadRequest("Something went wrong.");
+                return ResponseFactory.CreateErrorResponse(500, "Unknown error took place while logging.");
             }
             
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }

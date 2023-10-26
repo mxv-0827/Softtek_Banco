@@ -1,5 +1,6 @@
 ﻿using ÄPI.DTOs.Credentials;
 using ÄPI.Helpers;
+using ÄPI.Infrastructure.CustomExceptions;
 using ÄPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,19 +23,21 @@ namespace ÄPI.Controllers
 
 
         [HttpPut("UpdatePassword")]
-        public async Task<ActionResult> UpdatePassword(CredentialsUpdate_DTO newCredentials)
+        public async Task<IActionResult> UpdatePassword(CredentialsUpdate_DTO newCredentials)
         {
             try
             {
-                var userID = await _unitOfWork.CredentialsRepo.UpdatePassword(newCredentials); //Returns the UserID from 'Credentials' in order to generate an authentication token.
+                if (!ModelState.IsValid) { }
 
+                var userID = await _unitOfWork.CredentialsRepo.UpdatePassword(newCredentials); //Returns the UserID from 'Credentials' in order to generate an authentication token.
                 await _unitOfWork.Save();
-                return Ok(_token.GenerateToken(userID));
+
+                return ResponseFactory.CreateSuccessResponse(202, _token.GenerateToken(userID));
             }
 
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return ResponseFactory.CreateErrorResponse(404, ex.Message);
             }
         }
     }

@@ -29,47 +29,56 @@ namespace ÄPI.Controllers
         [HttpPost("AddAccount")]
         public async Task<IActionResult> AddAccount(AccountAdd_DTO accountToAdd)
         {
-            var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
-
-            Account account = new Account
+            try
             {
-                UserID = int.Parse(_token.GetUserIDFromToken(authenticatedToken)),
-                Alias = accountToAdd.Alias,
-                AccountTypeID = await _unitOfWork.AccountTypeRepo.GetID(accountToAdd.AccountType),
-                CurrencyID = await _unitOfWork.CurrencyRepo.GetID(accountToAdd.Currency),
-                Balance = 0,
-            };
+                var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
 
-            if(accountToAdd.AccountType == "Fiduciary")
-            {
-                bool uniqueCBU = false;
-
-                while (!uniqueCBU)
+                Account account = new Account
                 {
-                    account.CBU = _generator.GenerateCBU();
-                    uniqueCBU = await _unitOfWork.AccountRepo.VerifyCBUUnicity(account.CBU); 
+                    UserID = int.Parse(_token.GetUserIDFromToken(authenticatedToken)),
+                    Alias = accountToAdd.Alias,
+                    AccountTypeID = await _unitOfWork.AccountTypeRepo.GetID(accountToAdd.AccountType),
+                    CurrencyID = await _unitOfWork.CurrencyRepo.GetID(accountToAdd.Currency),
+                    Balance = 0,
+                };
+
+                if (accountToAdd.AccountType == "Fiduciary")
+                {
+                    bool uniqueCBU = false;
+
+                    while (!uniqueCBU)
+                    {
+                        account.CBU = _generator.GenerateCBU();
+                        uniqueCBU = await _unitOfWork.AccountRepo.VerifyCBUUnicity(account.CBU);
+                    }
+
+                    account.UUID = null;
                 }
 
-                account.UUID = null;
-            }
-
-            else
-            {
-                bool uniqueUUID = false;
-
-                while (!uniqueUUID)
+                else
                 {
-                    account.UUID = _generator.GenerateUUID();
-                    uniqueUUID = await _unitOfWork.AccountRepo.VerifyUUIDUnicity(account.UUID);
+                    bool uniqueUUID = false;
+
+                    while (!uniqueUUID)
+                    {
+                        account.UUID = _generator.GenerateUUID();
+                        uniqueUUID = await _unitOfWork.AccountRepo.VerifyUUIDUnicity(account.UUID);
+                    }
+
+                    account.CBU = null;
                 }
 
-                account.CBU = null;
+                await _unitOfWork.AccountRepo.AddEntity(account);
+                await _unitOfWork.Save();
+
+                return Ok("Everything went perfect.");
             }
 
-            await _unitOfWork.AccountRepo.AddEntity(account);
-            await _unitOfWork.Save();
-
-            return Ok("Everything went perfect.");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
 
@@ -101,8 +110,8 @@ namespace ÄPI.Controllers
         }
 
 
-        [HttpGet("GetUserAccount")]
-        public async Task<ActionResult> GetUserAccount([FromQuery] int accountNumber)
+        [HttpGet("GetUserAccount/{accountNumber}")]
+        public async Task<ActionResult> GetUserAccount([FromRoute] int accountNumber)
         {
             try
             {
@@ -126,6 +135,29 @@ namespace ÄPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpGet("GetBalance/{accountNumber}")]
+        public async Task<IActionResult> GetBalance([FromRoute] int accountNumber)
+        {
+            try
+            {
+                var authenticatedToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", ""); //Obtains the token which was used to authenticate.
+                int userID = int.Parse(_token.GetUserIDFromToken(authenticatedToken));
+
+                var account = await _unitOfWork.AccountRepo.GetEntityById(accountNumber);
+
+                if (userID != account.UserID) throw new Exception("This account does not belong to you.");
+                
+                return Ok(account.Balance);
+            }
+
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

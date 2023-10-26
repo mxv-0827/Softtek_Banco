@@ -28,7 +28,7 @@ namespace ÄPI.Services.APIs
                 return result.ConvertionValue.Rate * amount;
             }
 
-            throw new Exception();
+            throw new Exception("An error took place while converting the currencies.");
         }
     }
 }
